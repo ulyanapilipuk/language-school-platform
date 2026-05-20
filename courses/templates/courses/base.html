@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTalk - {% block title %}Изучай языки с удовольствием{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'courses/css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="{% url 'index' %}">GlobalTalk</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'index' %}">Главная</a></li>
+                    <li><a href="{% url 'course_list' %}">Все курсы</a></li>
+                    <li><a href="#">Мои курсы</a></li>
+                    <li><a href="#">Личный кабинет</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="#" class="btn-outline">Вход</a>
+                <a href="#" class="btn-primary">Регистрация</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <p>&copy; 2025 GlobalTalk. Все права защищены.</p>
+            <p>Контакты: hello@globaltalk.com | +375 (44) 456-78-90</p>
+        </div>
+    </footer>
+</body>
+</html>

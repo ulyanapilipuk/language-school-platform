@@ -1,0 +1,37 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}Изучай языки онлайн | GlobalTalk{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="hero">
+        <h1>Добро пожаловать в GlobalTalk</h1>
+        <p>Изучайте иностранные языки с лучшими курсами, видео и аудио материалами. Начните свой путь сегодня бесплатно!</p>
+    </div>
+
+    <section class="info-section">
+        <h2>Почему мы?</h2>
+        <div style="display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
+            <div style="flex:1; background:white; padding:1.5rem; border-radius:1rem;">
+                <h3>Экспертные курсы</h3>
+                <p>Курсы от профессиональных преподавателей и носителей языка.</p>
+            </div>
+            <div style="flex:1; background:white; padding:1.5rem; border-radius:1rem;">
+                <h3>Любой формат</h3>
+                <p>Видео, аудио, текстовые уроки – учитесь так, как вам удобно.</p>
+            </div>
+            <div style="flex:1; background:white; padding:1.5rem; border-radius:1rem;">
+                <h3>Сертификаты</h3>
+                <p>После прохождения курсов вы получите именной сертификат.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contacts">
+        <h2>Контакты</h2>
+        <p>Email: support@globaltalk.com</p>
+        <p>Телефон: +375 (44) 123-45-67</p>
+        <p>Адрес: г. Минск, ул. Ленина, д. 10</p>
+    </section>
+</div>
+{% endblock %}

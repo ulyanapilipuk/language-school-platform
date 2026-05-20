@@ -1,0 +1,78 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}Все курсы{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Все курсы</h1>
+
+    <!-- Форма фильтрации и сортировки -->
+    <form method="get" class="filters">
+        <div class="filter-group">
+            <label>Сложность</label>
+            <select name="difficulty">
+                <option value="">Любая</option>
+                <option value="beginner" {% if request.GET.difficulty == 'beginner' %}selected{% endif %}>Начинающий</option>
+                <option value="intermediate" {% if request.GET.difficulty == 'intermediate' %}selected{% endif %}>Средний</option>
+                <option value="advanced" {% if request.GET.difficulty == 'advanced' %}selected{% endif %}>Продвинутый</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Тип контента</label>
+            <select name="type">
+                <option value="">Любой</option>
+                <option value="audio" {% if request.GET.type == 'audio' %}selected{% endif %}>Аудио</option>
+                <option value="text" {% if request.GET.type == 'text' %}selected{% endif %}>Текст</option>
+                <option value="video" {% if request.GET.type == 'video' %}selected{% endif %}>Видео</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Цена</label>
+            <select name="price">
+                <option value="">Все</option>
+                <option value="free" {% if request.GET.price == 'free' %}selected{% endif %}>Бесплатные</option>
+                <option value="paid" {% if request.GET.price == 'paid' %}selected{% endif %}>Платные</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Сортировать по</label>
+            <select name="sort">
+                <option value="-created_at" {% if request.GET.sort == '-created_at' %}selected{% endif %}>Новые</option>
+                <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Цена (по возрастанию)</option>
+                <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Цена (по убыванию)</option>
+                <option value="difficulty" {% if request.GET.sort == 'difficulty' %}selected{% endif %}>Сложность</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Поиск</label>
+            <input type="text" name="search" placeholder="Название курса" value="{{ request.GET.search }}">
+        </div>
+        <button type="submit" class="btn-filter">Применить</button>
+        <a href="{% url 'course_list' %}" class="btn-outline" style="padding: 0.5rem 1rem;">Сбросить</a>
+    </form>
+
+    <div class="courses-grid">
+        {% for course in courses %}
+        <div class="course-card">
+            <div class="card-content">
+                <div class="course-title">{{ course.title }}</div>
+                <div class="course-description">{{ course.description|truncatechars:100 }}</div>
+                <div class="course-meta">
+                    <span class="badge">{{ course.get_difficulty_display }}</span>
+                    <span class="badge">{{ course.get_type_display }}</span>
+                    {% if course.has_mentor %}
+                    <span class="badge">С куратором</span>
+                    {% endif %}
+                </div>
+                <div class="price {% if course.price == 0 %}free{% else %}paid{% endif %}">
+                    {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} BYN{% endif %}
+                </div>
+                <a href="#" class="btn-details">Подробнее</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Курсы не найдены.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
