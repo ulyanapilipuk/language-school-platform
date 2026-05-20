@@ -35,6 +35,14 @@
             </select>
         </div>
         <div class="filter-group">
+            <label>Куратор</label>
+            <select name="has_mentor">
+                <option value="">Любой</option>
+                <option value="yes" {% if request.GET.has_mentor == 'yes' %}selected{% endif %}>С куратором</option>
+                <option value="no" {% if request.GET.has_mentor == 'no' %}selected{% endif %}>Без куратора</option>
+            </select>
+        </div>
+        <div class="filter-group">
             <label>Сортировать по</label>
             <select name="sort">
                 <option value="-created_at" {% if request.GET.sort == '-created_at' %}selected{% endif %}>Новые</option>
