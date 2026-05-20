@@ -8,12 +8,7 @@ def index(request):
 def course_list(request):
     courses = Course.objects.all()
 
-    # Поиск по названию
-    search_query = request.GET.get('search')
-    if search_query:
-        courses = courses.filter(title__icontains=search_query)
-
-    # Фильтрация
+    # ФИЛЬТРАЦИЯ 
     difficulty = request.GET.get('difficulty')
     if difficulty:
         courses = courses.filter(difficulty=difficulty)
@@ -28,17 +23,21 @@ def course_list(request):
     elif price_filter == 'paid':
         courses = courses.filter(price__gt=0)
 
-    has_mentor = request.GET.get('has_mentor')
-    if has_mentor == 'yes':
-        courses = courses.filter(has_mentor=True)
-    elif has_mentor == 'no':
-        courses = courses.filter(has_mentor=False)
-
-    # Сортировка
+    # СОРТИРОВКА
     sort_by = request.GET.get('sort')
     if sort_by:
         courses = courses.order_by(sort_by)
     else:
-        courses = courses.order_by('-created_at')  # по умолчанию сначала новые
+        courses = courses.order_by('-created_at')
+
+    # ПОИСК
+    search_query = request.GET.get('search')
+    if search_query:
+        
+        matching_ids = [
+            course.id for course in Course.objects.all()
+            if search_query.lower() in course.title.lower()
+        ]
+        courses = courses.filter(id__in=matching_ids)
 
     return render(request, 'courses/course_list.html', {'courses': courses})
