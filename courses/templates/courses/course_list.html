@@ -75,7 +75,7 @@
                 <div class="price {% if course.price == 0 %}free{% else %}paid{% endif %}">
                     {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} BYN{% endif %}
                 </div>
-                <a href="#" class="btn-details">Подробнее</a>
+                <a href="{% url 'course_detail' course.id %}" class="btn-details">Подробнее</a>
             </div>
         </div>
         {% empty %}

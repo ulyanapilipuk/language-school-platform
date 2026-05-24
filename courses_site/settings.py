@@ -118,5 +118,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'courses' / 'static']
-LOGIN_REDIRECT_URL = 'index'   # после входа на главную
-LOGIN_URL = 'users:login'            
+LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'users:login'

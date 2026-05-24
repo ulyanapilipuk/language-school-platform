@@ -1,39 +1,11 @@
 {% extends 'courses/base.html' %}
-
 {% block title %}Регистрация{% endblock %}
-
 {% block content %}
 <div class="container" style="max-width: 500px; margin: 3rem auto;">
     <h2>Регистрация</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="form-group">
-            {{ form.username.label_tag }}
-            {{ form.username }}
-            {{ form.username.errors }}
-        </div>
-        <div class="form-group">
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            {{ form.email.errors }}
-        </div>
-        <div class="form-group">
-            {{ form.phone.label_tag }}
-            {{ form.phone }}
-            <small class="form-text text-muted">{{ form.phone.help_text }}</small>
-            {{ form.phone.errors }}
-        </div>
-        <div class="form-group">
-            {{ form.password1.label_tag }}
-            {{ form.password1 }}
-            {{ form.password1.errors }}
-        </div>
-        <div class="form-group">
-            {{ form.password2.label_tag }}
-            {{ form.password2 }}
-            {{ form.password2.errors }}
-        </div>
+        {{ form.as_p }}
         <button type="submit" class="btn-primary">Зарегистрироваться</button>
     </form>
     <p>Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a></p>

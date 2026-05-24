@@ -7,9 +7,10 @@ from django.dispatch import receiver
 
 # Create your models here.
 
-def validate_belarus_phone(value):
+
+def validate_phone(value):
     if not value:
-        return  # пустое значение допустимо
+        return
     pattern = r'^\+375(29|33|44|25)\d{7}$'
     if not re.match(pattern, value):
         raise ValidationError(
@@ -22,10 +23,9 @@ class Profile(models.Model):
         max_length=20,
         blank=True,
         null=True,
-        validators=[validate_belarus_phone],
+        validators=[validate_phone],
         verbose_name='Телефон'
     )
-    
 
     def __str__(self):
         return f'Профиль {self.user.username}'
@@ -33,12 +33,3 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()

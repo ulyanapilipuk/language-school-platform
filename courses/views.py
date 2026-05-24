@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
-from .models import Course
+from django.contrib.auth.decorators import login_required
+from .models import Course, Favorite, Completed, Comment
 
 def index(request):
     return render(request, 'courses/index.html')
@@ -33,7 +34,6 @@ def course_list(request):
     # ПОИСК
     search_query = request.GET.get('search')
     if search_query:
-        
         matching_ids = [
             course.id for course in Course.objects.all()
             if search_query.lower() in course.title.lower()
@@ -42,5 +42,46 @@ def course_list(request):
 
     return render(request, 'courses/course_list.html', {'courses': courses})
 
-def test(request):
-    return render(request, 'courses/test.html')
+def course_detail(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    user = request.user
+    is_favorite = False
+    is_completed = False
+    comments = Comment.objects.filter(course=course).order_by('-created_at')
+
+    if user.is_authenticated:
+        is_favorite = Favorite.objects.filter(user=user, course=course).exists()
+        is_completed = Completed.objects.filter(user=user, course=course).exists()
+
+    context = {
+        'course': course,
+        'is_favorite': is_favorite,
+        'is_completed': is_completed,
+        'comments': comments,
+    }
+    return render(request, 'courses/course_detail.html', context)
+
+@login_required
+def toggle_favorite(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    favorite, created = Favorite.objects.get_or_create(user=request.user, course=course)
+    if not created:
+        favorite.delete()
+    return redirect('course_detail', pk=course_id)
+
+@login_required
+def toggle_completed(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    completed, created = Completed.objects.get_or_create(user=request.user, course=course)
+    if not created:
+        completed.delete()
+    return redirect('course_detail', pk=course_id)
+
+@login_required
+def add_comment(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content and Completed.objects.filter(user=request.user, course=course).exists():
+            Comment.objects.create(user=request.user, course=course, content=content)
+    return redirect('course_detail', pk=course_id)

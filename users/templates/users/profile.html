@@ -1,44 +1,42 @@
 {% extends 'courses/base.html' %}
-
 {% block title %}Личный кабинет{% endblock %}
-
 {% block content %}
 <div class="container" style="margin: 2rem auto;">
-    <h2>Личный кабинет</h2>
-    <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Телефон:</strong> {{ user.profile.phone|default:"не указан" }}</p>
+    <div style="background: white; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h1>Личный кабинет</h1>
+        <p><strong>{{ user.username }}</strong></p>
+        <p><strong>{{ user.email }}</strong></p>
+        <p><strong>Телефон:</strong> {{ user.profile.phone|default:"не указан" }}</p>
+    </div>
 
-    <h3>Избранные курсы</h3>
-    {% if favorite_courses %}
-        <div class="courses-grid">
-            {% for course in favorite_courses %}
-                <div class="course-card">
-                    <div class="card-content">
-                        <div class="course-title">{{ course.title }}</div>
-                        <a href="#" class="btn-details">К курсу</a>
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex: 1; background: white; border-radius: 1rem; padding: 1.5rem;">
+            <h2>Избранные курсы</h2>
+            {% if favorite_courses %}
+                {% for course in favorite_courses %}
+                    <div style="margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">
+                        <strong>{{ course.title }}</strong>
+                        <a href="{% url 'course_detail' course.id %}" class="btn-details" style="margin-left: 1rem;">Перейти</a>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>Нет избранных курсов. <a href="{% url 'course_list' %}">Изучите каталог</a>.</p>
+            {% endif %}
         </div>
-    {% else %}
-        <p>Нет избранных курсов.</p>
-    {% endif %}
 
-    <h3>Пройденные курсы</h3>
-    {% if completed_courses %}
-        <div class="courses-grid">
-            {% for course in completed_courses %}
-                <div class="course-card">
-                    <div class="card-content">
-                        <div class="course-title">{{ course.title }}</div>
-                        <a href="#" class="btn-details">К курсу</a>
+        <div style="flex: 1; background: white; border-radius: 1rem; padding: 1.5rem;">
+            <h2>Пройденные курсы</h2>
+            {% if completed_courses %}
+                {% for course in completed_courses %}
+                    <div style="margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">
+                        <strong>{{ course.title }}</strong>
+                        <a href="{% url 'course_detail' course.id %}" class="btn-details" style="margin-left: 1rem;">Перейти</a>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>Вы ещё не прошли ни одного курса.</p>
+            {% endif %}
         </div>
-    {% else %}
-        <p>Вы ещё не прошли ни одного курса.</p>
-    {% endif %}
+    </div>
 </div>
 {% endblock %}

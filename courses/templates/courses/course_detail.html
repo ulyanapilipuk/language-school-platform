@@ -1,0 +1,76 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container" style="margin: 2rem auto;">
+    <h1>{{ course.title }}</h1>
+    
+    <div class="course-actions" style="margin: 1rem 0;">
+        {% if user.is_authenticated %}
+            <a href="{% url 'toggle_favorite' course.id %}" class="btn-details">
+                {% if is_favorite %}♥ Удалить из избранного{% else %}🤍 В избранное{% endif %}
+            </a>
+            <a href="{% url 'toggle_completed' course.id %}" class="btn-details" style="background: {% if is_completed %}#10b981{% else %}#6b7280{% endif %};">
+                {% if is_completed %}✅ Пройден{% else %}📘 Отметить пройденным{% endif %}
+            </a>
+        {% else %}
+            <p><a href="{% url 'users:login' %}">Войдите</a>, чтобы добавлять в избранное и отмечать курсы.</p>
+        {% endif %}
+    </div>
+
+    <div class="course-content">
+        <h3>Описание курса</h3>
+        <p>{{ course.description }}</p>
+        
+        {% if course.content %}
+        <h3>Лекции</h3>
+        <div>{{ course.content|linebreaks }}</div>
+        {% endif %}
+        
+        {% if course.video_url %}
+        <h3>Видео</h3>
+        <video width="100%" controls src="{{ course.video_url }}"></video>
+        {% endif %}
+        
+        {% if course.audio_url %}
+        <h3>Аудио</h3>
+        <audio controls src="{{ course.audio_url }}"></audio>
+        {% endif %}
+        
+        {% if course.exercises %}
+        <h3>Упражнения</h3>
+        <div>{{ course.exercises|linebreaks }}</div>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <!-- Комментарии -->
+    <h3>Комментарии пользователей</h3>
+    {% if user.is_authenticated and is_completed %}
+        <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem;">
+            <form method="post" action="{% url 'add_comment' course.id %}">
+                {% csrf_token %}
+                <textarea name="content" rows="3" style="width: 100%;" placeholder="Оставьте свой комментарий..."></textarea>
+                <button type="submit" class="btn-primary">Отправить</button>
+            </form>
+        </div>
+    {% elif user.is_authenticated and not is_completed %}
+        <p>Вы можете оставить комментарий только после прохождения курса.</p>
+    {% elif not user.is_authenticated %}
+        <p><a href="{% url 'users:login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        {% for comment in comments %}
+            <div style="border-bottom: 1px solid #e2e8f0; padding: 1rem 0;">
+                <strong>{{ comment.user.username }}</strong> <small>{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% empty %}
+            <p>Нет комментариев. Будьте первым!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
