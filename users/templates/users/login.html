@@ -2,19 +2,26 @@
 {% block title %}Вход{% endblock %}
 {% block content %}
 <div class="container" style="max-width: 500px; margin: 3rem auto;">
-    <h2>Вход</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label>Имя пользователя</label>
-            <input type="text" name="username" class="form-control" required autofocus>
-        </div>
-        <div class="form-group">
-            <label>Пароль</label>
-            <input type="password" name="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn-primary">Войти</button>
-    </form>
-    <p style="margin-top: 1rem;">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+    <div style="background: white; border-radius: 1rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h2 style="margin: 0 0 1.5rem 0; text-align: center;">Вход</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label for="username" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Имя пользователя</label>
+                <input type="text" name="username" id="username" class="form-control" required autofocus>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Пароль</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            {% if form.errors %}
+                <div style="color: #dc2626; margin-bottom: 1rem; text-align: center;">Неверное имя пользователя или пароль.</div>
+            {% endif %}
+            <div style="display: flex; justify-content: center;">
+                <button type="submit" class="btn-primary" style="padding: 0.6rem 2rem; font-size: 1rem;">Войти</button>
+            </div>
+        </form>
+        <p style="margin-top: 1.5rem; text-align: center;">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+    </div>
 </div>
 {% endblock %}

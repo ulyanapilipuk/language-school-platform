@@ -16,5 +16,8 @@ class UserRegisterForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            Profile.objects.get_or_create(user=user, defaults={'phone': self.cleaned_data.get('phone')})
+            # Создаём или получаем профиль, затем записываем телефон
+            profile, created = Profile.objects.get_or_create(user=user)
+            profile.phone = self.cleaned_data.get('phone', '')
+            profile.save()
         return user
