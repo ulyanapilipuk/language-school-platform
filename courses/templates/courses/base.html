@@ -18,13 +18,18 @@
                 <ul>
                     <li><a href="{% url 'index' %}">Главная</a></li>
                     <li><a href="{% url 'course_list' %}">Все курсы</a></li>
-                    <li><a href="#">Мои курсы</a></li>
-                    <li><a href="#">Личный кабинет</a></li>
+                    <li><a href="{% url 'users:profile' %}">Мои курсы</a></li>
                 </ul>
             </nav>
             <div class="auth-buttons">
-                <a href="#" class="btn-outline">Вход</a>
-                <a href="#" class="btn-primary">Регистрация</a>
+                {% if user.is_authenticated %}
+                    <span>Привет, {{ user.username }}</span>
+                    <a href="{% url 'users:profile' %}" class="btn-outline">Профиль</a>
+                    <a href="{% url 'users:logout' %}" class="btn-outline">Выйти</a>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="btn-outline">Вход</a>
+                    <a href="{% url 'users:register' %}" class="btn-primary">Регистрация</a>
+                {% endif %}
             </div>
         </div>
     </header>

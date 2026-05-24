@@ -41,3 +41,6 @@ def course_list(request):
         courses = courses.filter(id__in=matching_ids)
 
     return render(request, 'courses/course_list.html', {'courses': courses})
+
+def test(request):
+    return render(request, 'courses/test.html')

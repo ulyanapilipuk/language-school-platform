@@ -60,7 +60,14 @@ nav a:hover {
 
 .auth-buttons {
     display: flex;
+    align-items: center;
     gap: 1rem;
+}
+
+.auth-buttons span {
+    line-height: 1;        
+    margin: 0;
+    padding: 0;
 }
 
 .btn-outline, .btn-primary {
