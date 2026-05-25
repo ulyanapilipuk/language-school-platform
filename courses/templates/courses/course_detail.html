@@ -10,7 +10,7 @@
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; color: #475569;">
             <span>⭐ {{ course.get_difficulty_display }}</span>
             <span>📹 {{ course.get_type_display }}</span>
-            <span>💰 {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} ₽{% endif %}</span>
+            <span>💰 {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} BYN{% endif %}</span>
             <span>👥 {% if course.has_mentor %}С куратором{% else %}Самостоятельно{% endif %}</span>
         </div>
         <!-- Кнопки действий -->
@@ -90,7 +90,7 @@
                 <ul style="list-style: none; padding: 0;">
                     <li>🎓 Уровень: {{ course.get_difficulty_display }}</li>
                     <li>📀 Формат: {{ course.get_type_display }}</li>
-                    <li>💰 Стоимость: {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} ₽{% endif %}</li>
+                    <li>💰 Стоимость: {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} BYN{% endif %}</li>
                     <li>👨‍🏫 Куратор: {% if course.has_mentor %}Да{% else %}Нет{% endif %}</li>
                 </ul>
             </div>
