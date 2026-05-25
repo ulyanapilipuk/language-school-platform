@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from .models import Course, Favorite, Completed, Comment
+from .models import Course, Favorite, Completed, Comment, Teacher
 
 def index(request):
     return render(request, 'courses/index.html')
@@ -85,3 +85,7 @@ def add_comment(request, course_id):
         if content and Completed.objects.filter(user=request.user, course=course).exists():
             Comment.objects.create(user=request.user, course=course, content=content)
     return redirect('course_detail', pk=course_id)
+
+def teachers_list(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'courses/teachers_list.html', {'teachers': teachers})

@@ -34,3 +34,19 @@ def profile(request):
         'completed_courses': completed_courses,
     }
     return render(request, 'users/profile.html', context)
+
+from .forms import UserRegisterForm, UserUpdateForm   # добавить импорт UserUpdateForm в начале файла
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ваши данные успешно обновлены!')
+            return redirect('users:profile')
+    else:
+        # Передаём текущий телефон в форму
+        initial_phone = request.user.profile.phone if hasattr(request.user, 'profile') else ''
+        form = UserUpdateForm(instance=request.user, initial={'phone': initial_phone})
+    return render(request, 'users/edit_profile.html', {'form': form})

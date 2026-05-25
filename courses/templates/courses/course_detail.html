@@ -4,73 +4,126 @@
 
 {% block content %}
 <div class="container" style="margin: 2rem auto;">
-    <h1>{{ course.title }}</h1>
-    
-    <div class="course-actions" style="margin: 1rem 0;">
-        {% if user.is_authenticated %}
-            <a href="{% url 'toggle_favorite' course.id %}" class="btn-details">
-                {% if is_favorite %}♥ Удалить из избранного{% else %}🤍 В избранное{% endif %}
-            </a>
-            <a href="{% url 'toggle_completed' course.id %}" class="btn-details" style="background: {% if is_completed %}#10b981{% else %}#6b7280{% endif %};">
-                {% if is_completed %}✅ Пройден{% else %}📘 Отметить пройденным{% endif %}
-            </a>
-        {% else %}
-            <p><a href="{% url 'users:login' %}">Войдите</a>, чтобы добавлять в избранное и отмечать курсы.</p>
-        {% endif %}
+    <!-- Заголовок и краткая информация -->
+    <div style="background: white; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h1>{{ course.title }}</h1>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; color: #475569;">
+            <span>⭐ {{ course.get_difficulty_display }}</span>
+            <span>📹 {{ course.get_type_display }}</span>
+            <span>💰 {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} ₽{% endif %}</span>
+            <span>👥 {% if course.has_mentor %}С куратором{% else %}Самостоятельно{% endif %}</span>
+        </div>
+        <!-- Кнопки действий -->
+        <div style="display: flex; gap: 1rem; margin: 1.5rem 0 0 0;">
+            {% if user.is_authenticated %}
+                <a href="{% url 'toggle_favorite' course.id %}" class="btn-details" style="background: {% if is_favorite %}#ef4444{% else %}#3b82f6{% endif %};">
+                    {% if is_favorite %}❤️ В избранном{% else %}🤍 В избранное{% endif %}
+                </a>
+                <a href="{% url 'toggle_completed' course.id %}" class="btn-details" style="background: {% if is_completed %}#10b981{% else %}#6b7280{% endif %};">
+                    {% if is_completed %}✅ Пройден{% else %}📘 Отметить пройденным{% endif %}
+                </a>
+            {% else %}
+                <p><a href="{% url 'users:login' %}" class="btn-details">Войдите</a>, чтобы добавлять в избранное и отмечать курсы.</p>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="course-content">
-        <h3>Описание курса</h3>
-        <p>{{ course.description }}</p>
-        
-        {% if course.content %}
-        <h3>Лекции</h3>
-        <div>{{ course.content|linebreaks }}</div>
-        {% endif %}
-        
-        {% if course.video_url %}
-        <h3>Видео</h3>
-        <video width="100%" controls src="{{ course.video_url }}"></video>
-        {% endif %}
-        
-        {% if course.audio_url %}
-        <h3>Аудио</h3>
-        <audio controls src="{{ course.audio_url }}"></audio>
-        {% endif %}
-        
-        {% if course.exercises %}
-        <h3>Упражнения</h3>
-        <div>{{ course.exercises|linebreaks }}</div>
-        {% endif %}
-    </div>
+    <!-- Основной контент в две колонки (левая - описание, правая - преподаватель) -->
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex: 2; min-width: 250px;">
+            <!-- Описание -->
+            <div style="background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2>О курсе</h2>
+                <p>{{ course.description }}</p>
+            </div>
 
-    <hr>
+            <!-- Лекции / Программа -->
+            {% if course.content %}
+            <div style="background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2>Программа курса</h2>
+                <div>{{ course.content|linebreaks }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Материалы (видео/аудио) -->
+            {% if course.video_url or course.audio_url or course.exercises %}
+            <div style="background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2>Материалы</h2>
+                {% if course.video_url %}
+                    <div><strong>Видео:</strong><br><video width="100%" controls src="{{ course.video_url }}" style="border-radius: 0.5rem;"></video></div>
+                {% endif %}
+                {% if course.audio_url %}
+                    <div><strong>Аудио:</strong><br><audio controls src="{{ course.audio_url }}"></audio></div>
+                {% endif %}
+                {% if course.exercises %}
+                    <div><strong>Упражнения:</strong><br>{{ course.exercises|linebreaks }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="flex: 1; min-width: 250px;">
+            <!-- Преподаватель (если есть) -->
+            <div style="background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2>Преподаватель</h2>
+                {% if course.teacher %}
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        {% if course.teacher.photo %}
+                            <img src="{{ course.teacher.photo.url }}" alt="{{ course.teacher.name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        {% else %}
+                            <div style="width: 80px; height: 80px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center;">👨‍🏫</div>
+                        {% endif %}
+                        <div>
+                            <strong>{{ course.teacher.name }}</strong><br>
+                            <small>{{ course.teacher.bio|truncatechars:100 }}</small>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem;">{{ course.teacher.experience }}</p>
+                {% else %}
+                    <p>Информация о преподавателе появится позже.</p>
+                {% endif %}
+            </div>
+
+            <!-- Дополнительная информация (длительность, требования и т.д. – можно добавить позже) -->
+            <div style="background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2>Информация</h2>
+                <ul style="list-style: none; padding: 0;">
+                    <li>🎓 Уровень: {{ course.get_difficulty_display }}</li>
+                    <li>📀 Формат: {{ course.get_type_display }}</li>
+                    <li>💰 Стоимость: {% if course.price == 0 %}Бесплатно{% else %}{{ course.price }} ₽{% endif %}</li>
+                    <li>👨‍🏫 Куратор: {% if course.has_mentor %}Да{% else %}Нет{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <!-- Комментарии -->
-    <h3>Комментарии пользователей</h3>
-    {% if user.is_authenticated and is_completed %}
-        <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem;">
-            <form method="post" action="{% url 'add_comment' course.id %}">
-                {% csrf_token %}
-                <textarea name="content" rows="3" style="width: 100%;" placeholder="Оставьте свой комментарий..."></textarea>
-                <button type="submit" class="btn-primary">Отправить</button>
-            </form>
-        </div>
-    {% elif user.is_authenticated and not is_completed %}
-        <p>Вы можете оставить комментарий только после прохождения курса.</p>
-    {% elif not user.is_authenticated %}
-        <p><a href="{% url 'users:login' %}">Войдите</a>, чтобы оставить комментарий.</p>
-    {% endif %}
-    
-    <div style="margin-top: 2rem;">
-        {% for comment in comments %}
-            <div style="border-bottom: 1px solid #e2e8f0; padding: 1rem 0;">
-                <strong>{{ comment.user.username }}</strong> <small>{{ comment.created_at|date:"d.m.Y H:i" }}</small>
-                <p>{{ comment.content }}</p>
+    <div style="background: white; border-radius: 1rem; padding: 1.5rem; margin-top: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h2>Комментарии ({{ comments.count }})</h2>
+        {% if user.is_authenticated and is_completed %}
+            <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                <form method="post" action="{% url 'add_comment' course.id %}">
+                    {% csrf_token %}
+                    <textarea name="content" rows="3" style="width: 100%; border-radius: 0.5rem; border: 1px solid #cbd5e1; padding: 0.5rem;" placeholder="Поделитесь впечатлениями о курсе..."></textarea>
+                    <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">Отправить</button>
+                </form>
             </div>
-        {% empty %}
-            <p>Нет комментариев. Будьте первым!</p>
-        {% endfor %}
+        {% elif user.is_authenticated and not is_completed %}
+            <p>Вы можете оставить комментарий только после прохождения курса.</p>
+        {% elif not user.is_authenticated %}
+            <p><a href="{% url 'users:login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+        {% endif %}
+
+        <div style="margin-top: 1rem;">
+            {% for comment in comments %}
+                <div style="border-bottom: 1px solid #e2e8f0; padding: 1rem 0;">
+                    <strong>{{ comment.user.username }}</strong> <small>{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% empty %}
+                <p>Нет комментариев. Будьте первым!</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

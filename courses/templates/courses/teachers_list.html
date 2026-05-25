@@ -1,0 +1,36 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}Наши преподаватели{% endblock %}
+
+{% block content %}
+<div class="container" style="margin: 2rem auto;">
+    <h1 style="margin-bottom: 2rem;">Преподаватели GlobalTalk</h1>
+    <div class="teachers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+        {% for teacher in teachers %}
+            <div class="teacher-card" style="background: white; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                {% if teacher.photo_url %}
+                    <div style="height: 200px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <img src="{{ teacher.photo_url }}" alt="{{ teacher.name }}" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+                    </div>
+                {% else %}
+                    <div style="height: 200px; background: #e2e8f0; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 3rem;">👨‍🏫</span>
+                    </div>
+                {% endif %}
+                <div style="padding: 1.5rem;">
+                    <h3 style="margin-bottom: 0.5rem;">{{ teacher.name }}</h3>
+                    {% if teacher.experience %}
+                        <p style="color: #3b82f6; margin-bottom: 0.5rem;">{{ teacher.experience }}</p>
+                    {% endif %}
+                    <p>{{ teacher.bio|truncatechars:120 }}</p>
+                    {% if teacher.email %}
+                        <p style="margin-top: 0.5rem;">📧 {{ teacher.email }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Преподаватели пока не добавлены.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

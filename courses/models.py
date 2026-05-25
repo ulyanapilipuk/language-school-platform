@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import User
 
 class Course(models.Model):
@@ -33,6 +31,15 @@ class Course(models.Model):
     has_mentor = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    teacher = models.ForeignKey(
+        'Teacher', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        verbose_name='Преподаватель',
+        related_name='courses'
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -64,3 +71,19 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.course.title}'
+
+
+class Teacher(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    photo_url = models.CharField(max_length=255, blank=True, null=True, verbose_name='Ссылка на фото')
+    bio = models.TextField(verbose_name='Биография', help_text='Образование, опыт, достижения')
+    experience = models.CharField(max_length=200, blank=True, null=True, verbose_name='Опыт работы')
+    email = models.EmailField(blank=True, null=True, verbose_name='Email')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Преподаватель'
+        verbose_name_plural = 'Преподаватели'
