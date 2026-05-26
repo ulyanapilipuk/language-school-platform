@@ -24,7 +24,6 @@ def course_list(request):
     elif price_filter == 'paid':
         courses = courses.filter(price__gt=0)
 
-    # 👇 ФИЛЬТР ПО КУРАТОРУ (добавлен)
     has_mentor = request.GET.get('has_mentor')
     if has_mentor == 'yes':
         courses = courses.filter(has_mentor=True)
